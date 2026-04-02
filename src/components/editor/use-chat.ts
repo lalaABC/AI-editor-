@@ -3,20 +3,14 @@
 import { type UseChatHelpers, useChat as useBaseChat } from '@ai-sdk/react';
 import { faker } from '@faker-js/faker';
 import { withAIBatch } from '@platejs/ai';
-import {
-  AIChatPlugin,
-  aiCommentToRange,
-  applyTableCellSuggestion,
-} from '@platejs/ai/react';
-import { getCommentKey, getTransientCommentKey } from '@platejs/comment';
-import { deserializeMd } from '@platejs/markdown';
+import { AIChatPlugin, applyTableCellSuggestion } from '@platejs/ai/react';
 import { BlockSelectionPlugin } from '@platejs/selection/react';
 import { DefaultChatTransport, type UIMessage } from 'ai';
-import { KEYS, NodeApi, nanoid, TextApi, type TNode } from 'platejs';
+import { KEYS, NodeApi, nanoid } from 'platejs';
 import { type PlateEditor, useEditorRef, usePluginOption } from 'platejs/react';
 import * as React from 'react';
 import { aiChatPlugin } from '@/components/editor/plugins/ai-kit';
-import { discussionPlugin } from './plugins/discussion-kit';
+// import { discussionPlugin } from './plugins/discussion-kit';
 
 export type ToolName = 'comment' | 'edit' | 'generate';
 
@@ -182,68 +176,69 @@ export const useChat = () => {
         });
       }
 
-      if (data.type === 'data-comment' && data.data) {
-        const commentData = data.data as TComment;
+      // Collaboration: comment handling disabled
+      // if (data.type === 'data-comment' && data.data) {
+      //   const commentData = data.data as TComment;
 
-        if (commentData.status === 'finished') {
-          editor.getApi(BlockSelectionPlugin).blockSelection.deselect();
+      //   if (commentData.status === 'finished') {
+      //     editor.getApi(BlockSelectionPlugin).blockSelection.deselect();
 
-          return;
-        }
+      //     return;
+      //   }
 
-        const aiComment = commentData.comment!;
-        const range = aiCommentToRange(editor, aiComment);
+      //   const aiComment = commentData.comment!;
+      //   const range = aiCommentToRange(editor, aiComment);
 
-        if (!range) return console.warn('No range found for AI comment');
+      //   if (!range) return console.warn('No range found for AI comment');
 
-        const discussions =
-          editor.getOption(discussionPlugin, 'discussions') || [];
+      //   const discussions =
+      //     editor.getOption(discussionPlugin, 'discussions') || [];
 
-        // Generate a new discussion ID
-        const discussionId = nanoid();
+      //   // Generate a new discussion ID
+      //   const discussionId = nanoid();
 
-        // Create a new comment
-        const newComment = {
-          id: nanoid(),
-          contentRich: [{ children: [{ text: aiComment.comment }], type: 'p' }],
-          createdAt: new Date(),
-          discussionId,
-          isEdited: false,
-          userId: editor.getOption(discussionPlugin, 'currentUserId'),
-        };
+      //   // Create a new comment
+      //   const newComment = {
+      //     id: nanoid(),
+      //     contentRich: [{ children: [{ text: aiComment.comment }], type: 'p' }],
+      //     createdAt: new Date(),
+      //     discussionId,
+      //     isEdited: false,
+      //     userId: editor.getOption(discussionPlugin, 'currentUserId'),
+      //   };
 
-        // Create a new discussion
-        const newDiscussion = {
-          id: discussionId,
-          comments: [newComment],
-          createdAt: new Date(),
-          documentContent: deserializeMd(editor, aiComment.content)
-            .map((node: TNode) => NodeApi.string(node))
-            .join('\n'),
-          isResolved: false,
-          userId: editor.getOption(discussionPlugin, 'currentUserId'),
-        };
+      //   // Create a new discussion
+      //   const newDiscussion = {
+      //     id: discussionId,
+      //     comments: [newComment],
+      //     createdAt: new Date(),
+      //     documentContent: deserializeMd(editor, aiComment.content)
+      //       .map((node: TNode) => NodeApi.string(node))
+      //       .join('\n'),
+      //     isResolved: false,
+      //     userId: editor.getOption(discussionPlugin, 'currentUserId'),
+      //   };
 
-        // Update discussions
-        const updatedDiscussions = [...discussions, newDiscussion];
-        editor.setOption(discussionPlugin, 'discussions', updatedDiscussions);
+      //   // Update discussions
+      //   const updatedDiscussions = [...discussions, newDiscussion];
+      //   editor.setOption(discussionPlugin, 'discussions', updatedDiscussions);
 
-        // Apply comment marks to the editor
-        editor.tf.withMerging(() => {
-          editor.tf.setNodes(
-            {
-              [getCommentKey(newDiscussion.id)]: true,
-              [getTransientCommentKey()]: true,
-              [KEYS.comment]: true,
-            },
-            {
-              at: range,
-              match: TextApi.isText,
-              split: true,
-            }
-          );
-        });
-      }
+      //   // Apply comment marks to the editor
+      //   editor.tf.withMerging(() => {
+      //     editor.tf.setNodes(
+      //       {
+      //         [getCommentKey(newDiscussion.id)]: true,
+      //         [getTransientCommentKey()]: true,
+      //         [KEYS.comment]: true,
+      //       },
+      //       {
+      //         at: range,
+      //         match: TextApi.isText,
+      //         split: true,
+      //       }
+      //     );
+      //   });
+      // }
     },
 
     ...options,
