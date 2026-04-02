@@ -7,17 +7,6 @@ const nextConfig: NextConfig = {
   experimental: {
     turbopackFileSystemCacheForDev: true,
   },
-
-  // TEMPLATE ONLY
-  async redirects() {
-    return [
-      {
-        destination: '/editor',
-        permanent: false,
-        source: '/',
-      },
-    ];
-  },
 };
 
 export default nextConfig;

@@ -1,11 +1,14 @@
+'use client';
+
 import { Toaster } from 'sonner';
 import { PlateEditor } from '@/components/editor/plate-editor';
+import { EditorLayout } from '@/components/layout/editor-layout';
 
 export default function Home() {
   return (
-    <div className="h-screen w-full">
+    <EditorLayout>
       <PlateEditor />
       <Toaster />
-    </div>
+    </EditorLayout>
   );
 }
