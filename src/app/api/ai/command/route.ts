@@ -1,4 +1,6 @@
-import { createGateway } from '@ai-sdk/gateway';
+import { createAnthropic } from '@ai-sdk/anthropic';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
+import { createOpenAI } from '@ai-sdk/openai';
 import {
   createUIMessageStream,
   createUIMessageStreamResponse,
@@ -25,8 +27,53 @@ import {
   getGeneratePrompt,
 } from './prompt';
 
+type Provider = 'openai' | 'anthropic' | 'google';
+
+const getProviderModel = (
+  provider: Provider,
+  apiKey: string,
+  modelId: string
+): LanguageModel => {
+  switch (provider) {
+    case 'anthropic':
+      return createAnthropic({ apiKey })(modelId);
+    case 'google':
+      return createGoogleGenerativeAI({ apiKey })(modelId);
+    default:
+      return createOpenAI({ apiKey })(modelId);
+  }
+};
+
+const getDefaultModel = (provider: Provider, apiKey: string): LanguageModel => {
+  switch (provider) {
+    case 'anthropic':
+      return createAnthropic({ apiKey })('claude-3-5-sonnet-20241022');
+    case 'google':
+      return createGoogleGenerativeAI({ apiKey })('gemini-2.5-flash');
+    default:
+      return createOpenAI({ apiKey })('gpt-4o-mini');
+  }
+};
+
+const getToolModel = (provider: Provider, apiKey: string): LanguageModel => {
+  switch (provider) {
+    case 'anthropic':
+      return createAnthropic({ apiKey })('claude-3-5-sonnet-20241022');
+    case 'google':
+      return createGoogleGenerativeAI({ apiKey })('gemini-2.5-flash');
+    default:
+      return createOpenAI({ apiKey })('gpt-4o-mini');
+  }
+};
+
 export async function POST(req: NextRequest) {
-  const { apiKey: key, ctx, messages: messagesRaw, model } = await req.json();
+  const {
+    apiKey: key,
+    ctx,
+    messages: messagesRaw,
+    model,
+    provider = 'openai',
+  } = await req.json();
 
   const { children, selection, toolName: toolNameParam } = ctx;
 
@@ -36,20 +83,16 @@ export async function POST(req: NextRequest) {
     value: children,
   });
 
-  const apiKey = key || process.env.AI_GATEWAY_API_KEY;
+  const apiKey = key || process.env[`${provider.toUpperCase()}_API_KEY`];
 
   if (!apiKey) {
     return NextResponse.json(
-      { error: 'Missing AI Gateway API key.' },
+      { error: `Missing ${provider.toUpperCase()} API key.` },
       { status: 401 }
     );
   }
 
   const isSelecting = editor.api.isExpanded();
-
-  const gatewayProvider = createGateway({
-    apiKey,
-  });
 
   try {
     const stream = createUIMessageStream<ChatMessage>({
@@ -65,10 +108,9 @@ export async function POST(req: NextRequest) {
           const enumOptions = isSelecting
             ? ['generate', 'edit', 'comment']
             : ['generate', 'comment'];
-          const modelId = model || 'google/gemini-2.5-flash';
 
           const { output: AIToolName } = await generateText({
-            model: gatewayProvider(modelId),
+            model: getToolModel(provider as Provider, apiKey),
             output: Output.choice({ options: enumOptions }),
             prompt,
           });
@@ -83,18 +125,20 @@ export async function POST(req: NextRequest) {
 
         const stream = streamText({
           experimental_transform: markdownJoinerTransform(),
-          model: gatewayProvider(model || 'openai/gpt-4o-mini'),
+          model: model
+            ? getProviderModel(provider as Provider, apiKey, model)
+            : getDefaultModel(provider as Provider, apiKey),
           // Not used
           prompt: '',
           tools: {
             comment: getCommentTool(editor, {
               messagesRaw,
-              model: gatewayProvider(model || 'google/gemini-2.5-flash'),
+              model: getToolModel(provider as Provider, apiKey),
               writer,
             }),
             table: getTableTool(editor, {
               messagesRaw,
-              model: gatewayProvider(model || 'google/gemini-2.5-flash'),
+              model: getToolModel(provider as Provider, apiKey),
               writer,
             }),
           },
@@ -125,9 +169,8 @@ export async function POST(req: NextRequest) {
                 activeTools: [],
                 model:
                   editType === 'selection'
-                    ? //The selection task is more challenging, so we chose to use Gemini 2.5 Flash.
-                      gatewayProvider(model || 'google/gemini-2.5-flash')
-                    : gatewayProvider(model || 'openai/gpt-4o-mini'),
+                    ? getToolModel(provider as Provider, apiKey)
+                    : getDefaultModel(provider as Provider, apiKey),
                 messages: [
                   {
                     content: editPrompt,
@@ -152,7 +195,7 @@ export async function POST(req: NextRequest) {
                     role: 'user',
                   },
                 ],
-                model: gatewayProvider(model || 'openai/gpt-4o-mini'),
+                model: getDefaultModel(provider as Provider, apiKey),
               };
             }
           },
