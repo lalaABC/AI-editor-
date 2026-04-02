@@ -1,7 +1,7 @@
 'use client';
 
 import { createPlatePlugin } from 'platejs/react';
-import { BlockDiscussion } from '@/components/ui/block-discussion';
+// import { BlockDiscussion } from '@/components/ui/block-discussion';
 import type { TComment } from '@/components/ui/comment';
 
 export type TDiscussion = {
@@ -134,13 +134,9 @@ export const discussionPlugin = createPlatePlugin({
     discussions: discussionsData,
     users: usersData,
   },
-})
-  .configure({
-    render: { aboveNodes: BlockDiscussion },
-  })
-  .extendSelectors(({ getOption }) => ({
-    currentUser: () => getOption('users')[getOption('currentUserId')],
-    user: (id: string) => getOption('users')[id],
-  }));
+}).extendSelectors(({ getOption }) => ({
+  currentUser: () => getOption('users')[getOption('currentUserId')],
+  user: (id: string) => getOption('users')[id],
+}));
 
 export const DiscussionKit = [discussionPlugin];

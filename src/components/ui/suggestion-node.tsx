@@ -43,10 +43,10 @@ export function SuggestionLeaf(props: PlateLeafProps<TSuggestionText>) {
   const { api, setOption } = useEditorPlugin(suggestionPlugin);
   const leaf = props.leaf;
 
-  const leafId: string = api.suggestion.nodeId(leaf) ?? '';
+  const leafId: string = api.suggestion?.nodeId?.(leaf) ?? '';
   const activeSuggestionId = usePluginOption(suggestionPlugin, 'activeId');
   const hoverSuggestionId = usePluginOption(suggestionPlugin, 'hoverId');
-  const dataList = api.suggestion.dataList(leaf);
+  const dataList = api.suggestion?.dataList?.(leaf) || [];
 
   const hasRemove = dataList.some((data) => data.type === 'remove');
   const hasActive = dataList.some((data) => data.id === activeSuggestionId);
@@ -83,7 +83,7 @@ export const SuggestionLineBreak: RenderNodeWrapper<SuggestionConfig> = ({
   api,
   element,
 }) => {
-  if (!api.suggestion.isBlockSuggestion(element)) return;
+  if (!api.suggestion?.isBlockSuggestion?.(element)) return;
 
   const suggestionData = element.suggestion;
 

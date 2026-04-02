@@ -13,8 +13,6 @@ import {
   SuggestionLineBreak,
 } from '@/components/ui/suggestion-node';
 
-import { discussionPlugin } from './discussion-kit';
-
 export type SuggestionConfig = ExtendConfig<
   BaseSuggestionConfig,
   {
@@ -26,10 +24,10 @@ export type SuggestionConfig = ExtendConfig<
 
 export const suggestionPlugin = toTPlatePlugin<SuggestionConfig>(
   BaseSuggestionPlugin,
-  ({ editor }) => ({
+  () => ({
     options: {
       activeId: null,
-      currentUserId: editor.getOption(discussionPlugin, 'currentUserId'),
+      currentUserId: 'default-user',
       hoverId: null,
       uniquePathMap: new Map(),
     },
