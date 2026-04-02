@@ -47,7 +47,7 @@ export function EmojiInputElement(props: PlateElementProps) {
         <InlineComboboxInput />
 
         <InlineComboboxContent>
-          {!isPending && <InlineComboboxEmpty>No results</InlineComboboxEmpty>}
+          {!isPending && <InlineComboboxEmpty>无结果</InlineComboboxEmpty>}
 
           <InlineComboboxGroup>
             {filteredEmojis.map((emoji) => (

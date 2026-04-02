@@ -226,7 +226,7 @@ export function SettingsDialog() {
             target="_blank"
           >
             <ExternalLinkIcon className="size-4" />
-            <span className="sr-only">Get API key</span>
+            <span className="sr-only">获取 API 密钥</span>
           </a>
         </Button>
       </div>
@@ -255,7 +255,7 @@ export function SettingsDialog() {
           <Eye className="size-4" />
         )}
         <span className="sr-only">
-          {showKey[provider] ? 'Hide' : 'Show'} API key
+          {showKey[provider] ? '隐藏' : '显示'} API 密钥
         </span>
       </Button>
     </div>
@@ -281,10 +281,8 @@ export function SettingsDialog() {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="text-xl">Settings</DialogTitle>
-          <DialogDescription>
-            Configure your AI provider and preferences.
-          </DialogDescription>
+          <DialogTitle className="text-xl">设置</DialogTitle>
+          <DialogDescription>配置你的 AI 服务商和偏好设置。</DialogDescription>
         </DialogHeader>
 
         <form className="space-y-10" onSubmit={handleSubmit}>
@@ -294,7 +292,7 @@ export function SettingsDialog() {
               <div className="size-8 rounded-full bg-purple-100 p-2 dark:bg-purple-900">
                 <Wand2Icon className="size-4 text-purple-600 dark:text-purple-400" />
               </div>
-              <h4 className="font-semibold">AI Provider</h4>
+              <h4 className="font-semibold">AI 服务商</h4>
             </div>
 
             {/* Provider Selection */}
@@ -331,7 +329,7 @@ export function SettingsDialog() {
                   className="absolute start-1 top-0 z-10 block -translate-y-1/2 bg-background px-2 font-medium text-foreground text-xs group-has-disabled:opacity-50"
                   htmlFor="select-model"
                 >
-                  Model
+                  模型
                 </label>
                 <Popover onOpenChange={setOpenModel} open={openModel}>
                   <PopoverTrigger asChild id="select-model">
@@ -348,8 +346,8 @@ export function SettingsDialog() {
                   </PopoverTrigger>
                   <PopoverContent className="w-full p-0">
                     <Command>
-                      <CommandInput placeholder="Search model..." />
-                      <CommandEmpty>No model found.</CommandEmpty>
+                      <CommandInput placeholder="搜索模型..." />
+                      <CommandEmpty>未找到模型。</CommandEmpty>
                       <CommandList>
                         <CommandGroup>
                           {currentProvider.models.map((m) => (
@@ -385,12 +383,12 @@ export function SettingsDialog() {
           </div>
 
           <Button className="w-full" size="lg" type="submit">
-            Save changes
+            保存更改
           </Button>
         </form>
 
         <p className="text-muted-foreground text-sm">
-          API keys are stored in your browser&apos;s localStorage.
+          API 密钥存储在浏览器的 localStorage 中。
         </p>
       </DialogContent>
     </Dialog>

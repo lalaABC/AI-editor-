@@ -56,7 +56,7 @@ export function AlignToolbarButton(props: DropdownMenuProps) {
   return (
     <DropdownMenu modal={false} onOpenChange={setOpen} open={open} {...props}>
       <DropdownMenuTrigger asChild>
-        <ToolbarButton isDropdown pressed={open} tooltip="Align">
+        <ToolbarButton isDropdown pressed={open} tooltip="对齐">
           <IconValue />
         </ToolbarButton>
       </DropdownMenuTrigger>

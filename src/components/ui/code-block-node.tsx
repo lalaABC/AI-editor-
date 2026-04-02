@@ -52,7 +52,7 @@ export function CodeBlockElement(props: PlateElementProps<TCodeBlockElement>) {
               className="size-6 text-xs"
               onClick={() => formatCodeBlock(editor, { element })}
               size="icon"
-              title="Format code"
+              title="格式化代码"
               variant="ghost"
             >
               <BracesIcon className="!size-3.5 text-muted-foreground" />
@@ -104,7 +104,7 @@ function CodeBlockCombobox() {
           variant="ghost"
         >
           {languages.find((language) => language.value === value)?.label ??
-            'Plain Text'}
+            '纯文本'}
         </Button>
       </PopoverTrigger>
       <PopoverContent
@@ -115,10 +115,10 @@ function CodeBlockCombobox() {
           <CommandInput
             className="h-9"
             onValueChange={(value) => setSearchValue(value)}
-            placeholder="Search language..."
+            placeholder="搜索语言..."
             value={searchValue}
           />
-          <CommandEmpty>No language found.</CommandEmpty>
+          <CommandEmpty>未找到语言。</CommandEmpty>
 
           <CommandList className="h-[344px] overflow-y-auto">
             <CommandGroup>
@@ -177,7 +177,7 @@ function CopyButton({
       }}
       {...props}
     >
-      <span className="sr-only">Copy</span>
+      <span className="sr-only">复制</span>
       {hasCopied ? (
         <CheckIcon className="!size-3" />
       ) : (

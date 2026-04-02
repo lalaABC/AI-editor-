@@ -164,7 +164,7 @@ export function ExportToolbarButton(props: DropdownMenuProps) {
   return (
     <DropdownMenu modal={false} onOpenChange={setOpen} open={open} {...props}>
       <DropdownMenuTrigger asChild>
-        <ToolbarButton isDropdown pressed={open} tooltip="Export">
+        <ToolbarButton isDropdown pressed={open} tooltip="导出">
           <ArrowDownToLineIcon className="size-4" />
         </ToolbarButton>
       </DropdownMenuTrigger>
@@ -172,19 +172,17 @@ export function ExportToolbarButton(props: DropdownMenuProps) {
       <DropdownMenuContent align="start">
         <DropdownMenuGroup>
           <DropdownMenuItem onSelect={exportToHtml}>
-            Export as HTML
+            导出为 HTML
           </DropdownMenuItem>
-          <DropdownMenuItem onSelect={exportToPdf}>
-            Export as PDF
-          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={exportToPdf}>导出为 PDF</DropdownMenuItem>
           <DropdownMenuItem onSelect={exportToImage}>
-            Export as Image
+            导出为图片
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={exportToMarkdown}>
-            Export as Markdown
+            导出为 Markdown
           </DropdownMenuItem>
           <DropdownMenuItem onSelect={exportToWord}>
-            Export as Word
+            导出为 Word
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>

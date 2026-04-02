@@ -25,22 +25,22 @@ const CONTENT: Record<
 > = {
   [KEYS.audio]: {
     accept: ['audio/*'],
-    content: 'Add an audio file',
+    content: '添加音频文件',
     icon: <AudioLines />,
   },
   [KEYS.file]: {
     accept: ['*'],
-    content: 'Add a file',
+    content: '添加文件',
     icon: <FileUp />,
   },
   [KEYS.img]: {
     accept: ['image/*'],
-    content: 'Add an image',
+    content: '添加图片',
     icon: <ImageIcon />,
   },
   [KEYS.video]: {
     accept: ['video/*'],
-    content: 'Add a video',
+    content: '添加视频',
     icon: <Film />,
   },
 };

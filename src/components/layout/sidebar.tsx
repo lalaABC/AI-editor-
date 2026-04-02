@@ -13,9 +13,9 @@ import {
 
 // Mock page data
 const pages = [
-  { id: '1', title: 'Getting Started', icon: '📄' },
-  { id: '2', title: 'Project Notes', icon: '📝' },
-  { id: '3', title: 'Meeting Notes', icon: '📋' },
+  { id: '1', title: '开始使用', icon: '📄' },
+  { id: '2', title: '项目笔记', icon: '📝' },
+  { id: '3', title: '会议记录', icon: '📋' },
 ];
 
 type SidebarProps = {
@@ -36,9 +36,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         <div className="flex h-6 w-6 items-center justify-center rounded-md bg-foreground font-bold text-background text-xs">
           W
         </div>
-        <span className="flex-1 truncate font-medium text-sm">
-          My Workspace
-        </span>
+        <span className="flex-1 truncate font-medium text-sm">我的工作区</span>
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
@@ -50,7 +48,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
               <ChevronsUpDown className="h-4 w-4" />
             </Button>
           </TooltipTrigger>
-          <TooltipContent side="right">Collapse sidebar</TooltipContent>
+          <TooltipContent side="right">收起侧边栏</TooltipContent>
         </Tooltip>
       </div>
 
@@ -85,7 +83,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                       <Trash2 className="h-3.5 w-3.5 text-muted-foreground" />
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent>Delete</TooltipContent>
+                  <TooltipContent>删除</TooltipContent>
                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -93,7 +91,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                       <MoreHorizontal className="h-3.5 w-3.5 text-muted-foreground" />
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent>More</TooltipContent>
+                  <TooltipContent>更多</TooltipContent>
                 </Tooltip>
               </div>
             )}
@@ -109,7 +107,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           variant="ghost"
         >
           <Plus className="h-4 w-4" />
-          New Page
+          新建页面
         </Button>
       </div>
     </aside>

@@ -39,19 +39,17 @@ export function Breadcrumb({
               <PanelLeft className="h-4 w-4" />
             </Button>
           </TooltipTrigger>
-          <TooltipContent side="bottom">Open sidebar</TooltipContent>
+          <TooltipContent side="bottom">展开侧边栏</TooltipContent>
         </Tooltip>
       )}
 
       {/* Breadcrumb path */}
       <div className="flex items-center gap-1 text-muted-foreground text-sm">
         <span className="cursor-pointer truncate transition-colors hover:text-foreground">
-          My Workspace
+          我的工作区
         </span>
         <ChevronRight className="h-3.5 w-3.5 shrink-0" />
-        <span className="truncate font-medium text-foreground">
-          Getting Started
-        </span>
+        <span className="truncate font-medium text-foreground">开始使用</span>
       </div>
 
       {/* Spacer */}
@@ -65,7 +63,7 @@ export function Breadcrumb({
               <Star className="h-4 w-4 text-muted-foreground" />
             </Button>
           </TooltipTrigger>
-          <TooltipContent side="bottom">Favorite</TooltipContent>
+          <TooltipContent side="bottom">收藏</TooltipContent>
         </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -73,7 +71,7 @@ export function Breadcrumb({
               <Globe className="h-4 w-4 text-muted-foreground" />
             </Button>
           </TooltipTrigger>
-          <TooltipContent side="bottom">Share</TooltipContent>
+          <TooltipContent side="bottom">分享</TooltipContent>
         </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -81,7 +79,7 @@ export function Breadcrumb({
               <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
             </Button>
           </TooltipTrigger>
-          <TooltipContent side="bottom">More options</TooltipContent>
+          <TooltipContent side="bottom">更多选项</TooltipContent>
         </Tooltip>
       </div>
     </div>

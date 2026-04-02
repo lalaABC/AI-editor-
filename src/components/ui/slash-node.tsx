@@ -69,60 +69,60 @@ const groups: Group[] = [
     ],
   },
   {
-    group: 'Basic blocks',
+    group: '基础块',
     items: [
       {
         icon: <PilcrowIcon />,
         keywords: ['paragraph'],
-        label: 'Text',
+        label: '正文',
         value: KEYS.p,
       },
       {
         icon: <Heading1Icon />,
         keywords: ['title', 'h1'],
-        label: 'Heading 1',
+        label: '标题 1',
         value: KEYS.h1,
       },
       {
         icon: <Heading2Icon />,
         keywords: ['subtitle', 'h2'],
-        label: 'Heading 2',
+        label: '标题 2',
         value: KEYS.h2,
       },
       {
         icon: <Heading3Icon />,
         keywords: ['subtitle', 'h3'],
-        label: 'Heading 3',
+        label: '标题 3',
         value: KEYS.h3,
       },
       {
         icon: <ListIcon />,
         keywords: ['unordered', 'ul', '-'],
-        label: 'Bulleted list',
+        label: '无序列表',
         value: KEYS.ul,
       },
       {
         icon: <ListOrdered />,
         keywords: ['ordered', 'ol', '1'],
-        label: 'Numbered list',
+        label: '有序列表',
         value: KEYS.ol,
       },
       {
         icon: <Square />,
         keywords: ['checklist', 'task', 'checkbox', '[]'],
-        label: 'To-do list',
+        label: '待办列表',
         value: KEYS.listTodo,
       },
       {
         icon: <ChevronRightIcon />,
         keywords: ['collapsible', 'expandable'],
-        label: 'Toggle',
+        label: '折叠',
         value: KEYS.toggle,
       },
       {
         icon: <Code2 />,
         keywords: ['```'],
-        label: 'Code Block',
+        label: '代码块',
         value: KEYS.codeBlock,
       },
       {
@@ -133,14 +133,14 @@ const groups: Group[] = [
       {
         icon: <Quote />,
         keywords: ['citation', 'blockquote', 'quote', '>'],
-        label: 'Blockquote',
+        label: '引用块',
         value: KEYS.blockquote,
       },
       {
         description: 'Insert a highlighted block.',
         icon: <LightbulbIcon />,
         keywords: ['note'],
-        label: 'Callout',
+        label: '提示框',
         value: KEYS.callout,
       },
     ].map((item) => ({
@@ -151,29 +151,29 @@ const groups: Group[] = [
     })),
   },
   {
-    group: 'Advanced blocks',
+    group: '高级块',
     items: [
       {
         icon: <TableOfContentsIcon />,
         keywords: ['toc'],
-        label: 'Table of contents',
+        label: '目录',
         value: KEYS.toc,
       },
       {
         icon: <Columns3Icon />,
-        label: '3 columns',
+        label: '三栏布局',
         value: 'action_three_columns',
       },
       {
         focusEditor: false,
         icon: <RadicalIcon />,
-        label: 'Equation',
+        label: '公式',
         value: KEYS.equation,
       },
       {
         icon: <PenToolIcon />,
         keywords: ['excalidraw'],
-        label: 'Excalidraw',
+        label: '画板',
         value: KEYS.excalidraw,
       },
       {
@@ -186,7 +186,7 @@ const groups: Group[] = [
           'flowchart',
           'mermaid',
         ],
-        label: 'Code Drawing',
+        label: '代码绘图',
         value: KEYS.codeDrawing,
       },
     ].map((item) => ({
@@ -197,19 +197,19 @@ const groups: Group[] = [
     })),
   },
   {
-    group: 'Inline',
+    group: '行内元素',
     items: [
       {
         focusEditor: true,
         icon: <CalendarIcon />,
         keywords: ['time'],
-        label: 'Date',
+        label: '日期',
         value: KEYS.date,
       },
       {
         focusEditor: false,
         icon: <RadicalIcon />,
-        label: 'Inline Equation',
+        label: '行内公式',
         value: KEYS.inlineEquation,
       },
     ].map((item) => ({
@@ -232,7 +232,7 @@ export function SlashInputElement(
         <InlineComboboxInput />
 
         <InlineComboboxContent>
-          <InlineComboboxEmpty>No results</InlineComboboxEmpty>
+          <InlineComboboxEmpty>无结果</InlineComboboxEmpty>
 
           {groups.map(({ group, items }) => (
             <InlineComboboxGroup key={group}>

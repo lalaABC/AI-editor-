@@ -38,73 +38,73 @@ export const turnIntoItems = [
   {
     icon: <PilcrowIcon />,
     keywords: ['paragraph'],
-    label: 'Text',
+    label: '正文',
     value: KEYS.p,
   },
   {
     icon: <Heading1Icon />,
     keywords: ['title', 'h1'],
-    label: 'Heading 1',
+    label: '标题 1',
     value: 'h1',
   },
   {
     icon: <Heading2Icon />,
     keywords: ['subtitle', 'h2'],
-    label: 'Heading 2',
+    label: '标题 2',
     value: 'h2',
   },
   {
     icon: <Heading3Icon />,
     keywords: ['subtitle', 'h3'],
-    label: 'Heading 3',
+    label: '标题 3',
     value: 'h3',
   },
   {
     icon: <Heading4Icon />,
     keywords: ['subtitle', 'h4'],
-    label: 'Heading 4',
+    label: '标题 4',
     value: 'h4',
   },
   {
     icon: <Heading5Icon />,
     keywords: ['subtitle', 'h5'],
-    label: 'Heading 5',
+    label: '标题 5',
     value: 'h5',
   },
   {
     icon: <Heading6Icon />,
     keywords: ['subtitle', 'h6'],
-    label: 'Heading 6',
+    label: '标题 6',
     value: 'h6',
   },
   {
     icon: <ListIcon />,
     keywords: ['unordered', 'ul', '-'],
-    label: 'Bulleted list',
+    label: '无序列表',
     value: KEYS.ul,
   },
   {
     icon: <ListOrderedIcon />,
     keywords: ['ordered', 'ol', '1'],
-    label: 'Numbered list',
+    label: '有序列表',
     value: KEYS.ol,
   },
   {
     icon: <SquareIcon />,
     keywords: ['checklist', 'task', 'checkbox', '[]'],
-    label: 'To-do list',
+    label: '待办列表',
     value: KEYS.listTodo,
   },
   {
     icon: <ChevronRightIcon />,
     keywords: ['collapsible', 'expandable'],
-    label: 'Toggle list',
+    label: '折叠列表',
     value: KEYS.toggle,
   },
   {
     icon: <FileCodeIcon />,
     keywords: ['```'],
-    label: 'Code',
+    label: '代码',
     value: KEYS.codeBlock,
   },
   {
@@ -117,18 +117,18 @@ export const turnIntoItems = [
       'flowchart',
       'mermaid',
     ],
-    label: 'Code Drawing',
+    label: '代码绘图',
     value: KEYS.codeDrawing,
   },
   {
     icon: <QuoteIcon />,
     keywords: ['citation', 'blockquote', '>'],
-    label: 'Quote',
+    label: '引用',
     value: KEYS.blockquote,
   },
   {
     icon: <Columns3Icon />,
-    label: '3 columns',
+    label: '三栏布局',
     value: 'action_three_columns',
   },
 ];
@@ -155,7 +155,7 @@ export function TurnIntoToolbarButton(props: DropdownMenuProps) {
           className="min-w-[125px]"
           isDropdown
           pressed={open}
-          tooltip="Turn into"
+          tooltip="转换为"
         >
           {selectedItem.label}
         </ToolbarButton>
@@ -170,7 +170,7 @@ export function TurnIntoToolbarButton(props: DropdownMenuProps) {
         }}
       >
         <ToolbarMenuGroup
-          label="Turn into"
+          label="转换为"
           onValueChange={(type) => {
             setBlockType(editor, type);
           }}

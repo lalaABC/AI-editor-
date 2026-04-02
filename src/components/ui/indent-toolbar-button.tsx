@@ -12,7 +12,7 @@ export function IndentToolbarButton(
   const { props: buttonProps } = useIndentButton();
 
   return (
-    <ToolbarButton {...props} {...buttonProps} tooltip="Indent">
+    <ToolbarButton {...props} {...buttonProps} tooltip="增加缩进">
       <IndentIcon />
     </ToolbarButton>
   );
@@ -24,7 +24,7 @@ export function OutdentToolbarButton(
   const { props: buttonProps } = useOutdentButton();
 
   return (
-    <ToolbarButton {...props} {...buttonProps} tooltip="Outdent">
+    <ToolbarButton {...props} {...buttonProps} tooltip="减少缩进">
       <OutdentIcon />
     </ToolbarButton>
   );

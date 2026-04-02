@@ -56,46 +56,46 @@ type Item = {
 
 const groups: Group[] = [
   {
-    group: 'Basic blocks',
+    group: '基础块',
     items: [
       {
         icon: <PilcrowIcon />,
-        label: 'Paragraph',
+        label: '段落',
         value: KEYS.p,
       },
       {
         icon: <Heading1Icon />,
-        label: 'Heading 1',
+        label: '标题 1',
         value: 'h1',
       },
       {
         icon: <Heading2Icon />,
-        label: 'Heading 2',
+        label: '标题 2',
         value: 'h2',
       },
       {
         icon: <Heading3Icon />,
-        label: 'Heading 3',
+        label: '标题 3',
         value: 'h3',
       },
       {
         icon: <TableIcon />,
-        label: 'Table',
+        label: '表格',
         value: KEYS.table,
       },
       {
         icon: <FileCodeIcon />,
-        label: 'Code',
+        label: '代码',
         value: KEYS.codeBlock,
       },
       {
         icon: <QuoteIcon />,
-        label: 'Quote',
+        label: '引用',
         value: KEYS.blockquote,
       },
       {
         icon: <MinusIcon />,
-        label: 'Divider',
+        label: '分隔线',
         value: KEYS.hr,
       },
     ].map((item) => ({
@@ -106,26 +106,26 @@ const groups: Group[] = [
     })),
   },
   {
-    group: 'Lists',
+    group: '列表',
     items: [
       {
         icon: <ListIcon />,
-        label: 'Bulleted list',
+        label: '无序列表',
         value: KEYS.ul,
       },
       {
         icon: <ListOrderedIcon />,
-        label: 'Numbered list',
+        label: '有序列表',
         value: KEYS.ol,
       },
       {
         icon: <SquareIcon />,
-        label: 'To-do list',
+        label: '待办列表',
         value: KEYS.listTodo,
       },
       {
         icon: <ChevronRightIcon />,
-        label: 'Toggle list',
+        label: '折叠列表',
         value: KEYS.toggle,
       },
     ].map((item) => ({
@@ -136,16 +136,16 @@ const groups: Group[] = [
     })),
   },
   {
-    group: 'Media',
+    group: '媒体',
     items: [
       {
         icon: <ImageIcon />,
-        label: 'Image',
+        label: '图片',
         value: KEYS.img,
       },
       {
         icon: <FilmIcon />,
-        label: 'Embed',
+        label: '嵌入',
         value: KEYS.mediaEmbed,
       },
     ].map((item) => ({
@@ -156,32 +156,32 @@ const groups: Group[] = [
     })),
   },
   {
-    group: 'Advanced blocks',
+    group: '高级块',
     items: [
       {
         icon: <TableOfContentsIcon />,
-        label: 'Table of contents',
+        label: '目录',
         value: KEYS.toc,
       },
       {
         icon: <Columns3Icon />,
-        label: '3 columns',
+        label: '三栏布局',
         value: 'action_three_columns',
       },
       {
         focusEditor: false,
         icon: <RadicalIcon />,
-        label: 'Equation',
+        label: '公式',
         value: KEYS.equation,
       },
       {
         icon: <PenToolIcon />,
-        label: 'Excalidraw',
+        label: '画板',
         value: KEYS.excalidraw,
       },
       {
         icon: <Code2 />,
-        label: 'Code Drawing',
+        label: '代码绘图',
         value: KEYS.codeDrawing,
       },
     ].map((item) => ({
@@ -192,23 +192,23 @@ const groups: Group[] = [
     })),
   },
   {
-    group: 'Inline',
+    group: '行内元素',
     items: [
       {
         icon: <Link2Icon />,
-        label: 'Link',
+        label: '链接',
         value: KEYS.link,
       },
       {
         focusEditor: true,
         icon: <CalendarIcon />,
-        label: 'Date',
+        label: '日期',
         value: KEYS.date,
       },
       {
         focusEditor: false,
         icon: <RadicalIcon />,
-        label: 'Inline Equation',
+        label: '行内公式',
         value: KEYS.inlineEquation,
       },
     ].map((item) => ({
@@ -227,7 +227,7 @@ export function InsertToolbarButton(props: DropdownMenuProps) {
   return (
     <DropdownMenu modal={false} onOpenChange={setOpen} open={open} {...props}>
       <DropdownMenuTrigger asChild>
-        <ToolbarButton isDropdown pressed={open} tooltip="Insert">
+        <ToolbarButton isDropdown pressed={open} tooltip="插入">
           <PlusIcon />
         </ToolbarButton>
       </DropdownMenuTrigger>
