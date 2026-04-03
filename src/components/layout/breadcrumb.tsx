@@ -7,13 +7,14 @@ import {
   PanelLeft,
   Star,
 } from 'lucide-react';
-
+import * as React from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { usePageStore } from '@/lib/store/page-store';
 
 type BreadcrumbProps = {
   sidebarCollapsed: boolean;
@@ -24,6 +25,8 @@ export function Breadcrumb({
   sidebarCollapsed,
   onToggleSidebar,
 }: BreadcrumbProps) {
+  const breadcrumbs = usePageStore((s) => s.breadcrumbs());
+
   return (
     <div className="flex h-11 shrink-0 items-center gap-1 border-b px-3">
       {/* Toggle sidebar button */}
@@ -43,13 +46,25 @@ export function Breadcrumb({
         </Tooltip>
       )}
 
-      {/* Breadcrumb path */}
+      {/* Dynamic breadcrumb path */}
       <div className="flex items-center gap-1 text-muted-foreground text-sm">
         <span className="cursor-pointer truncate transition-colors hover:text-foreground">
           我的工作区
         </span>
-        <ChevronRight className="h-3.5 w-3.5 shrink-0" />
-        <span className="truncate font-medium text-foreground">开始使用</span>
+        {breadcrumbs.map((page, i) => (
+          <React.Fragment key={page.id}>
+            <ChevronRight className="h-3.5 w-3.5 shrink-0" />
+            <span
+              className={`truncate ${
+                i === breadcrumbs.length - 1
+                  ? 'font-medium text-foreground'
+                  : 'cursor-pointer transition-colors hover:text-foreground'
+              }`}
+            >
+              {page.icon} {page.title}
+            </span>
+          </React.Fragment>
+        ))}
       </div>
 
       {/* Spacer */}
