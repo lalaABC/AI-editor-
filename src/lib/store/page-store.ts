@@ -4,8 +4,10 @@ import {
   buildTree,
   getBreadcrumbs,
   type PageNode,
+  type PageVersion,
   pagesApi,
   type TreeNode,
+  versionsApi,
 } from '@/lib/api/pages';
 
 type PageStore = {
@@ -16,12 +18,16 @@ type PageStore = {
   expandedDirs: Set<string>;
   loading: boolean;
 
+  // Version state
+  versions: PageVersion[];
+  versionsLoading: boolean;
+
   // Computed (as getters)
   tree: () => TreeNode[];
   breadcrumbs: () => PageNode[];
   activePage: () => PageNode | null;
 
-  // Actions
+  // Page Actions
   fetchPages: () => Promise<void>;
   setActivePage: (id: string) => void;
   setSearchQuery: (query: string) => void;
@@ -34,6 +40,15 @@ type PageStore = {
   reorderPages: (
     items: { id: string; parentId: string | null; sort: number }[]
   ) => Promise<void>;
+
+  // Version Actions
+  fetchVersions: (pageId: string) => Promise<void>;
+  createVersion: (
+    pageId: string,
+    source: 'auto' | 'manual'
+  ) => Promise<PageVersion | null>;
+  restoreVersion: (versionId: string) => Promise<void>;
+  deleteVersion: (versionId: string) => Promise<void>;
 };
 
 export const usePageStore = create<PageStore>((set, get) => ({
@@ -43,6 +58,10 @@ export const usePageStore = create<PageStore>((set, get) => ({
   searchQuery: '',
   expandedDirs: new Set<string>(),
   loading: false,
+
+  // Version state
+  versions: [],
+  versionsLoading: false,
 
   // Computed
   tree: () => buildTree(get().pages),
@@ -200,6 +219,65 @@ export const usePageStore = create<PageStore>((set, get) => ({
       });
     } catch (e) {
       console.error('排序失败:', e);
+    }
+  },
+
+  // Version Actions
+  fetchVersions: async (pageId) => {
+    set({ versionsLoading: true });
+    try {
+      const versions = await versionsApi.list(pageId);
+      set({ versions, versionsLoading: false });
+    } catch (e) {
+      console.error('加载版本历史失败:', e);
+      set({ versionsLoading: false });
+    }
+  },
+
+  createVersion: async (pageId, source) => {
+    try {
+      const page = get().pages.find((p) => p.id === pageId);
+      if (!page?.content) return null;
+      const version = await versionsApi.create({
+        pageId,
+        title: page.title,
+        content: page.content,
+        source,
+      });
+      set((state) => ({ versions: [version, ...state.versions] }));
+      return version;
+    } catch (e) {
+      console.error('创建版本失败:', e);
+      return null;
+    }
+  },
+
+  restoreVersion: async (versionId) => {
+    try {
+      const restored = await versionsApi.restore(versionId);
+      if (!restored) return;
+      // 先为当前状态创建一个恢复前快照
+      const { activePageId } = get();
+      if (activePageId) {
+        await get().createVersion(activePageId, 'manual');
+      }
+      // 更新本地页面数据
+      set((state) => ({
+        pages: state.pages.map((p) => (p.id === restored.id ? restored : p)),
+      }));
+    } catch (e) {
+      console.error('恢复版本失败:', e);
+    }
+  },
+
+  deleteVersion: async (versionId) => {
+    try {
+      await versionsApi.delete(versionId);
+      set((state) => ({
+        versions: state.versions.filter((v) => v.id !== versionId),
+      }));
+    } catch (e) {
+      console.error('删除版本失败:', e);
     }
   },
 }));

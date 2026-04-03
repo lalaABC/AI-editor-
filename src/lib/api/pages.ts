@@ -20,6 +20,17 @@ export type TreeNode = PageNode & {
   children: TreeNode[];
 };
 
+/** 页面版本快照 */
+export type PageVersion = {
+  id: string;
+  pageId: string;
+  title: string;
+  content: unknown[];
+  /** auto = 定时自动, manual = 手动保存 */
+  source: 'auto' | 'manual';
+  createdAt: string;
+};
+
 // ============================================================
 // Mock data (开发阶段使用，后端对接后替换为真实 API)
 // ============================================================
@@ -128,6 +139,9 @@ const seedPages: PageNode[] = [
 
 let mockPages: PageNode[] = [...seedPages];
 
+// 版本历史 mock 存储
+let mockVersions: PageVersion[] = [];
+
 // ============================================================
 // API functions (mock, 替换为真实 fetch 即可对接后端)
 // ============================================================
@@ -223,6 +237,72 @@ export const pagesApi = {
     return mockPages.filter(
       (p) => p.type === 'page' && p.title.toLowerCase().includes(q)
     );
+  },
+};
+
+// ============================================================
+// Version API (mock, 替换为真实 fetch 即可对接后端)
+// ============================================================
+
+export const versionsApi = {
+  /** 获取页面的版本列表（最新在前） */
+  async list(pageId: string): Promise<PageVersion[]> {
+    // TODO: 替换为 fetch(`/api/pages/${pageId}/versions`)
+    return mockVersions
+      .filter((v) => v.pageId === pageId)
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+  },
+
+  /** 获取单个版本 */
+  async get(versionId: string): Promise<PageVersion | null> {
+    // TODO: 替换为 fetch(`/api/versions/${versionId}`)
+    return mockVersions.find((v) => v.id === versionId) ?? null;
+  },
+
+  /** 创建版本快照 */
+  async create(input: {
+    pageId: string;
+    title: string;
+    content: unknown[];
+    source: 'auto' | 'manual';
+  }): Promise<PageVersion> {
+    // TODO: 替换为 fetch(`/api/pages/${input.pageId}/versions`, { method: 'POST', body: input })
+    const version: PageVersion = {
+      id: nanoid(),
+      pageId: input.pageId,
+      title: input.title,
+      content: input.content,
+      source: input.source,
+      createdAt: new Date().toISOString(),
+    };
+    mockVersions.push(version);
+    return version;
+  },
+
+  /** 恢复到指定版本 */
+  async restore(versionId: string): Promise<PageNode | null> {
+    // TODO: 替换为 fetch(`/api/versions/${versionId}/restore`, { method: 'POST' })
+    const version = mockVersions.find((v) => v.id === versionId);
+    if (!version) return null;
+    const idx = mockPages.findIndex((p) => p.id === version.pageId);
+    if (idx === -1) return null;
+    mockPages[idx] = {
+      ...mockPages[idx],
+      content: version.content,
+      title: version.title,
+      updatedAt: new Date().toISOString(),
+    };
+    return mockPages[idx];
+  },
+
+  /** 删除版本 */
+  async delete(versionId: string): Promise<{ success: boolean }> {
+    // TODO: 替换为 fetch(`/api/versions/${versionId}`, { method: 'DELETE' })
+    mockVersions = mockVersions.filter((v) => v.id !== versionId);
+    return { success: true };
   },
 };
 

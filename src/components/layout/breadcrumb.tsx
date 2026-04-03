@@ -3,12 +3,21 @@
 import {
   ChevronRight,
   Globe,
+  History,
   MoreHorizontal,
   PanelLeft,
   Star,
 } from 'lucide-react';
 import * as React from 'react';
+
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
   Tooltip,
   TooltipContent,
@@ -16,6 +25,8 @@ import {
 } from '@/components/ui/tooltip';
 import { getBreadcrumbs } from '@/lib/api/pages';
 import { usePageStore } from '@/lib/store/page-store';
+
+import { VersionHistory } from './version-history';
 
 type BreadcrumbProps = {
   sidebarCollapsed: boolean;
@@ -28,6 +39,8 @@ export function Breadcrumb({
 }: BreadcrumbProps) {
   const pages = usePageStore((s) => s.pages);
   const activePageId = usePageStore((s) => s.activePageId);
+  const [versionHistoryOpen, setVersionHistoryOpen] = React.useState(false);
+
   const breadcrumbs = React.useMemo(
     () => (activePageId ? getBreadcrumbs(pages, activePageId) : []),
     [pages, activePageId]
@@ -94,15 +107,35 @@ export function Breadcrumb({
           </TooltipTrigger>
           <TooltipContent side="bottom">分享</TooltipContent>
         </Tooltip>
-        <Tooltip>
-          <TooltipTrigger asChild>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
             <Button className="h-7 w-7" size="icon" variant="ghost">
               <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
             </Button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom">更多选项</TooltipContent>
-        </Tooltip>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => setVersionHistoryOpen(true)}>
+              <History className="mr-2 h-4 w-4" />
+              版本历史
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <Star className="mr-2 h-4 w-4" />
+              收藏此页
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Globe className="mr-2 h-4 w-4" />
+              分享
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
+
+      {/* 版本历史面板 */}
+      <VersionHistory
+        onOpenChange={setVersionHistoryOpen}
+        open={versionHistoryOpen}
+      />
     </div>
   );
 }
