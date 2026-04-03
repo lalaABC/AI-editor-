@@ -14,6 +14,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { getBreadcrumbs } from '@/lib/api/pages';
 import { usePageStore } from '@/lib/store/page-store';
 
 type BreadcrumbProps = {
@@ -25,7 +26,12 @@ export function Breadcrumb({
   sidebarCollapsed,
   onToggleSidebar,
 }: BreadcrumbProps) {
-  const breadcrumbs = usePageStore((s) => s.breadcrumbs());
+  const pages = usePageStore((s) => s.pages);
+  const activePageId = usePageStore((s) => s.activePageId);
+  const breadcrumbs = React.useMemo(
+    () => (activePageId ? getBreadcrumbs(pages, activePageId) : []),
+    [pages, activePageId]
+  );
 
   return (
     <div className="flex h-11 shrink-0 items-center gap-1 border-b px-3">

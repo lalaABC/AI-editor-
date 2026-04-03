@@ -33,6 +33,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import type { TreeNode } from '@/lib/api/pages';
+import { buildTree } from '@/lib/api/pages';
 import { usePageStore } from '@/lib/store/page-store';
 
 // ============================================================
@@ -62,8 +63,12 @@ type DropPosition = 'before' | 'after' | 'inside' | null;
 // ============================================================
 
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
-  const { tree, searchQuery, setSearchQuery, createPage, fetchPages, loading } =
-    usePageStore();
+  const pages = usePageStore((s) => s.pages);
+  const searchQuery = usePageStore((s) => s.searchQuery);
+  const loading = usePageStore((s) => s.loading);
+  const setSearchQuery = usePageStore((s) => s.setSearchQuery);
+  const createPage = usePageStore((s) => s.createPage);
+  const fetchPages = usePageStore((s) => s.fetchPages);
 
   // 组件挂载时获取页面数据
   React.useEffect(() => {
@@ -72,9 +77,12 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
 
   if (collapsed) return null;
 
+  // 用 useMemo 缓存树形结构，避免重复 buildTree
+  const pageTree = React.useMemo(() => buildTree(pages), [pages]);
+
   // 过滤搜索结果（搜索时显示扁平列表）
   const filteredTree = React.useMemo(() => {
-    if (!searchQuery.trim()) return tree();
+    if (!searchQuery.trim()) return pageTree;
     const q = searchQuery.toLowerCase();
     const results: TreeNode[] = [];
     const collectMatches = (nodes: TreeNode[]) => {
@@ -87,95 +95,97 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         }
       }
     };
-    collectMatches(tree());
+    collectMatches(pageTree);
     return results;
-  }, [tree, searchQuery]);
+  }, [pageTree, searchQuery]);
 
   const isSearching = searchQuery.trim().length > 0;
 
   return (
-    <aside className="flex h-full w-60 select-none flex-col border-r bg-muted/40">
-      {/* 顶部工作区标题 */}
-      <div className="flex h-12 items-center gap-2 px-3">
-        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-foreground font-bold text-background text-xs">
-          W
-        </div>
-        <span className="flex-1 truncate font-medium text-sm">我的工作区</span>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              className="h-6 w-6"
-              onClick={onToggle}
-              size="icon"
-              variant="ghost"
-            >
-              <PanelLeftClose className="h-4 w-4" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side="right">收起侧边栏</TooltipContent>
-        </Tooltip>
-      </div>
-
-      <Separator />
-
-      {/* 搜索栏 */}
-      <div className="p-2">
-        <div className="relative">
-          <Search className="absolute top-2.5 left-2 h-4 w-4 text-muted-foreground" />
-          <Input
-            className="h-8 pr-2 pl-8"
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="搜索页面..."
-            value={searchQuery}
-          />
-        </div>
-      </div>
-
-      <Separator />
-
-      {/* 页面树 */}
-      <div className="flex-1 overflow-y-auto py-1">
-        {loading ? (
-          <div className="flex items-center justify-center py-8 text-muted-foreground text-sm">
-            加载中...
+    <DndProvider backend={HTML5Backend}>
+      <aside className="flex h-full w-60 select-none flex-col border-r bg-muted/40">
+        {/* 顶部工作区标题 */}
+        <div className="flex h-12 items-center gap-2 px-3">
+          <div className="flex h-6 w-6 items-center justify-center rounded-md bg-foreground font-bold text-background text-xs">
+            W
           </div>
-        ) : filteredTree.length === 0 ? (
-          <div className="flex items-center justify-center py-8 text-muted-foreground text-sm">
-            {isSearching ? '没有找到匹配的页面' : '暂无页面'}
+          <span className="flex-1 truncate font-medium text-sm">
+            我的工作区
+          </span>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                className="h-6 w-6"
+                onClick={onToggle}
+                size="icon"
+                variant="ghost"
+              >
+                <PanelLeftClose className="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="right">收起侧边栏</TooltipContent>
+          </Tooltip>
+        </div>
+
+        <Separator />
+
+        {/* 搜索栏 */}
+        <div className="p-2">
+          <div className="relative">
+            <Search className="absolute top-2.5 left-2 h-4 w-4 text-muted-foreground" />
+            <Input
+              className="h-8 pr-2 pl-8"
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="搜索页面..."
+              value={searchQuery}
+            />
           </div>
-        ) : (
-          <DndProvider backend={HTML5Backend}>
+        </div>
+
+        <Separator />
+
+        {/* 页面树 */}
+        <div className="flex-1 overflow-y-auto py-1">
+          {loading ? (
+            <div className="flex items-center justify-center py-8 text-muted-foreground text-sm">
+              加载中...
+            </div>
+          ) : filteredTree.length === 0 ? (
+            <div className="flex items-center justify-center py-8 text-muted-foreground text-sm">
+              {isSearching ? '没有找到匹配的页面' : '暂无页面'}
+            </div>
+          ) : (
             <TreeNodeList
               depth={0}
               isSearching={isSearching}
               nodes={filteredTree}
             />
-          </DndProvider>
-        )}
-      </div>
+          )}
+        </div>
 
-      <Separator />
+        <Separator />
 
-      {/* 底部操作栏 */}
-      <div className="space-y-1 p-2">
-        <Button
-          className="h-8 w-full justify-start gap-2 text-muted-foreground text-sm"
-          onClick={() => createPage({ type: 'page' })}
-          variant="ghost"
-        >
-          <Plus className="h-4 w-4" />
-          新建页面
-        </Button>
-        <Button
-          className="h-8 w-full justify-start gap-2 text-muted-foreground text-sm"
-          onClick={() => createPage({ type: 'directory' })}
-          variant="ghost"
-        >
-          <FolderPlus className="h-4 w-4" />
-          新建目录
-        </Button>
-      </div>
-    </aside>
+        {/* 底部操作栏 */}
+        <div className="space-y-1 p-2">
+          <Button
+            className="h-8 w-full justify-start gap-2 text-muted-foreground text-sm"
+            onClick={() => createPage({ type: 'page' })}
+            variant="ghost"
+          >
+            <Plus className="h-4 w-4" />
+            新建页面
+          </Button>
+          <Button
+            className="h-8 w-full justify-start gap-2 text-muted-foreground text-sm"
+            onClick={() => createPage({ type: 'directory' })}
+            variant="ghost"
+          >
+            <FolderPlus className="h-4 w-4" />
+            新建目录
+          </Button>
+        </div>
+      </aside>
+    </DndProvider>
   );
 }
 
@@ -315,17 +325,21 @@ function TreeNodeItem({ node, depth, isSearching }: TreeNodeItemProps) {
       setDropPosition(isInside ? 'inside' : isBefore ? 'before' : 'after');
     },
     canDrop(item: DragItem) {
-      // 防止将父节点拖入其子节点
-      const isDescendant = (
-        parentId: string | null,
-        targetId: string
-      ): boolean => {
-        if (parentId === null) return false;
-        if (parentId === targetId) return true;
-        const child = node.children.find((c) => c.id === parentId);
-        return child ? isDescendant(child.parentId, targetId) : false;
+      // 防止将节点拖入其自身或其后代节点
+      if (item.id === node.id) return false;
+      const pages = usePageStore.getState().pages;
+      // 构建目标节点的所有后代 ID 集合
+      const descendantIds = new Set<string>();
+      const collectDescendants = (parentId: string) => {
+        for (const p of pages) {
+          if (p.parentId === parentId) {
+            descendantIds.add(p.id);
+            collectDescendants(p.id);
+          }
+        }
       };
-      return !isDescendant(item.parentId, node.id);
+      collectDescendants(node.id);
+      return !descendantIds.has(item.id);
     },
     drop(item: DragItem) {
       if (item.id === node.id || !dropPosition) return;

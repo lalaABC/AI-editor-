@@ -285,6 +285,11 @@ export function SettingsDialog() {
           <DialogDescription>配置你的 AI 服务商和偏好设置。</DialogDescription>
         </DialogHeader>
 
+        <div className="rounded-md border border-yellow-200 bg-yellow-50 p-3 text-sm text-yellow-800 dark:border-yellow-800 dark:bg-yellow-950 dark:text-yellow-200">
+          <strong>安全提示：</strong>API
+          密钥仅存储在浏览器本地（localStorage）并在请求中传输。此模式仅适用于开发/演示环境，生产环境请将密钥存储在服务端。
+        </div>
+
         <form className="space-y-10" onSubmit={handleSubmit}>
           {/* AI Settings Group */}
           <div className="space-y-4">

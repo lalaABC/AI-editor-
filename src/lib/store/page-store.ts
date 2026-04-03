@@ -60,19 +60,29 @@ export const usePageStore = create<PageStore>((set, get) => ({
   // Actions
   fetchPages: async () => {
     set({ loading: true });
-    const pages = await pagesApi.list();
-    const firstPage = pages.find((p) => p.type === 'page');
-    set({
-      pages,
-      loading: false,
-      activePageId: firstPage?.id ?? null,
-    });
-    // 自动展开根目录
-    const rootDirs = pages.filter(
-      (p) => p.type === 'directory' && p.parentId === null
-    );
-    if (rootDirs.length > 0) {
-      set({ expandedDirs: new Set(rootDirs.map((d) => d.id)) });
+    try {
+      const pages = await pagesApi.list();
+      const { activePageId } = get();
+      const firstPage = pages.find((p) => p.type === 'page');
+      set({
+        pages,
+        loading: false,
+        // 保留已有选中状态，仅首次加载时自动选中
+        activePageId:
+          activePageId && pages.find((p) => p.id === activePageId)
+            ? activePageId
+            : (firstPage?.id ?? null),
+      });
+      // 自动展开根目录
+      const rootDirs = pages.filter(
+        (p) => p.type === 'directory' && p.parentId === null
+      );
+      if (rootDirs.length > 0) {
+        set({ expandedDirs: new Set(rootDirs.map((d) => d.id)) });
+      }
+    } catch (e) {
+      console.error('加载页面失败:', e);
+      set({ loading: false });
     }
   },
 
@@ -96,72 +106,100 @@ export const usePageStore = create<PageStore>((set, get) => ({
   },
 
   createPage: async (input) => {
-    const page = await pagesApi.create(input);
-    set((state) => ({ pages: [...state.pages, page] }));
-    if (page.type === 'page') {
-      set({ activePageId: page.id });
-    }
-    if (page.parentId) {
-      const { expandedDirs } = get();
-      if (!expandedDirs.has(page.parentId)) {
-        const next = new Set(expandedDirs);
-        next.add(page.parentId);
-        set({ expandedDirs: next });
+    try {
+      const { pages } = get();
+      // 计算正确的 sort 值，避免与已有项冲突
+      const siblings = pages.filter(
+        (p) => p.parentId === (input.parentId ?? null)
+      );
+      const maxSort =
+        siblings.length > 0 ? Math.max(...siblings.map((s) => s.sort)) : -1;
+
+      const page = await pagesApi.create({
+        ...input,
+        parentId: input.parentId ?? null,
+        sort: maxSort + 1,
+      });
+      set((state) => ({ pages: [...state.pages, page] }));
+      if (page.type === 'page') {
+        set({ activePageId: page.id });
       }
+      if (page.parentId) {
+        const { expandedDirs } = get();
+        if (!expandedDirs.has(page.parentId)) {
+          const next = new Set(expandedDirs);
+          next.add(page.parentId);
+          set({ expandedDirs: next });
+        }
+      }
+      return page;
+    } catch (e) {
+      console.error('创建页面失败:', e);
+      throw e;
     }
-    return page;
   },
 
   updatePage: async (id, input) => {
-    await pagesApi.update(id, input);
-    set((state) => ({
-      pages: state.pages.map((p) =>
-        p.id === id
-          ? { ...p, ...input, updatedAt: new Date().toISOString() }
-          : p
-      ),
-    }));
+    try {
+      await pagesApi.update(id, input);
+      set((state) => ({
+        pages: state.pages.map((p) =>
+          p.id === id
+            ? { ...p, ...input, updatedAt: new Date().toISOString() }
+            : p
+        ),
+      }));
+    } catch (e) {
+      console.error('更新页面失败:', e);
+    }
   },
 
   deletePage: async (id) => {
-    const { activePageId, pages } = get();
-    // 收集要删除的 ID
-    const idsToDelete = new Set<string>();
-    const collect = (parentId: string) => {
-      idsToDelete.add(parentId);
-      for (const p of pages) {
-        if (p.parentId === parentId) collect(p.id);
-      }
-    };
-    collect(id);
+    try {
+      const { activePageId, pages } = get();
+      const idsToDelete = new Set<string>();
+      const collect = (parentId: string) => {
+        idsToDelete.add(parentId);
+        for (const p of pages) {
+          if (p.parentId === parentId) collect(p.id);
+        }
+      };
+      collect(id);
 
-    await pagesApi.delete(id);
+      await pagesApi.delete(id);
 
-    const remaining = pages.filter((p) => !idsToDelete.has(p.id));
-    const newActive =
-      activePageId && idsToDelete.has(activePageId)
-        ? (remaining.find((p) => p.type === 'page')?.id ?? null)
-        : activePageId;
+      const remaining = pages.filter((p) => !idsToDelete.has(p.id));
+      const newActive =
+        activePageId && idsToDelete.has(activePageId)
+          ? (remaining.find((p) => p.type === 'page')?.id ?? null)
+          : activePageId;
 
-    set({ pages: remaining, activePageId: newActive });
+      set({ pages: remaining, activePageId: newActive });
+    } catch (e) {
+      console.error('删除页面失败:', e);
+    }
   },
 
   reorderPages: async (items) => {
-    await pagesApi.reorder(items);
-    set((state) => {
-      const updated = [...state.pages];
-      for (const item of items) {
-        const idx = updated.findIndex((p) => p.id === item.id);
-        if (idx !== -1) {
-          updated[idx] = {
-            ...updated[idx],
-            parentId: item.parentId,
-            sort: item.sort,
-            updatedAt: new Date().toISOString(),
-          };
+    try {
+      await pagesApi.reorder(items);
+      set((state) => {
+        const updated = [...state.pages];
+        for (const item of items) {
+          const idx = updated.findIndex((p) => p.id === item.id);
+          if (idx !== -1) {
+            updated[idx] = {
+              ...updated[idx],
+              parentId: item.parentId,
+              sort: item.sort,
+              updatedAt: new Date().toISOString(),
+            };
+          }
         }
-      }
-      return { pages: updated };
-    });
+        return { pages: updated };
+      });
+    } catch (e) {
+      console.error('排序失败:', e);
+    }
   },
 }));

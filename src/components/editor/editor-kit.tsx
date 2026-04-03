@@ -10,8 +10,10 @@ import { BasicBlocksKit } from '@/components/editor/plugins/basic-blocks-kit';
 import { BasicMarksKit } from '@/components/editor/plugins/basic-marks-kit';
 import { BlockMenuKit } from '@/components/editor/plugins/block-menu-kit';
 import { BlockPlaceholderKit } from '@/components/editor/plugins/block-placeholder-kit';
+import { BlockSelectionKit } from '@/components/editor/plugins/block-selection-kit';
 import { CalloutKit } from '@/components/editor/plugins/callout-kit';
 import { CodeBlockKit } from '@/components/editor/plugins/code-block-kit';
+import { BaseCodeDrawingKit } from '@/components/editor/plugins/code-drawing-base-kit';
 import { ColumnKit } from '@/components/editor/plugins/column-kit';
 // import { CommentKit } from '@/components/editor/plugins/comment-kit';
 import { CopilotKit } from '@/components/editor/plugins/copilot-kit';
@@ -19,11 +21,13 @@ import { CopilotKit } from '@/components/editor/plugins/copilot-kit';
 import { DateKit } from '@/components/editor/plugins/date-kit';
 // import { DiscussionKit } from '@/components/editor/plugins/discussion-kit';
 import { DndKit } from '@/components/editor/plugins/dnd-kit';
+import { DocxExportKit } from '@/components/editor/plugins/docx-export-kit';
 import { DocxKit } from '@/components/editor/plugins/docx-kit';
 import { EmojiKit } from '@/components/editor/plugins/emoji-kit';
 import { ExitBreakKit } from '@/components/editor/plugins/exit-break-kit';
 import { FloatingToolbarKit } from '@/components/editor/plugins/floating-toolbar-kit';
 import { FontKit } from '@/components/editor/plugins/font-kit';
+import { IndentKit } from '@/components/editor/plugins/indent-kit';
 import { LineHeightKit } from '@/components/editor/plugins/line-height-kit';
 import { LinkKit } from '@/components/editor/plugins/link-kit';
 import { ListKit } from '@/components/editor/plugins/list-kit';
@@ -51,6 +55,7 @@ export const EditorKit = [
   ...CalloutKit,
   ...ColumnKit,
   ...MathKit,
+  ...BaseCodeDrawingKit,
   ...DateKit,
   ...LinkKit,
   ...MentionKit,
@@ -63,6 +68,7 @@ export const EditorKit = [
   ...ListKit,
   ...AlignKit,
   ...LineHeightKit,
+  ...IndentKit,
 
   // Collaboration
   // ...DiscussionKit,
@@ -74,6 +80,7 @@ export const EditorKit = [
   ...AutoformatKit,
   // ...CursorOverlayKit,
   ...BlockMenuKit,
+  ...BlockSelectionKit,
   ...DndKit,
   ...EmojiKit,
   ...ExitBreakKit,
@@ -81,6 +88,7 @@ export const EditorKit = [
 
   // Parsers
   ...DocxKit,
+  ...DocxExportKit,
   ...MarkdownKit,
 
   // UI
